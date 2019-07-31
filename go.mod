@@ -1,4 +1,4 @@
-module github.com/plivox/glumy
+module github.com/plivox/gulmy
 
 go 1.12
 
