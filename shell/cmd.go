@@ -8,8 +8,18 @@ import (
 )
 
 type cmd struct {
+	// name      string
+	// args      []string
 	makeStyle bool
 	cmd       *exec.Cmd
+}
+
+func Cmd(name string, args ...string) *cmd {
+	c := exec.Command(name, args...)
+	// c.Stdout = os.Stdout
+	// c.Stderr = os.Stderr
+	// return &cmd{name, args, GlobalMakeStyle, c}
+	return &cmd{GlobalMakeStyle, c}
 }
 
 func (c *cmd) Dir(dir string) *cmd {
@@ -27,14 +37,18 @@ func (c *cmd) Run() {
 		log.Println(c.cmd.Args[0], strings.Join(c.cmd.Args[1:], " "))
 	}
 
+	c.cmd.Stdout = os.Stdout
+	c.cmd.Stderr = os.Stderr
+
 	if err := c.cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func Cmd(name string, args ...string) *cmd {
-	c := exec.Command(name, args...)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	return &cmd{GlobalMakeStyle, c}
+func (c *cmd) Output() string {
+	out, err := c.cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(out)
 }
