@@ -1,4 +1,4 @@
-package version
+package helper
 
 import (
 	"encoding/json"
@@ -7,11 +7,9 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	s "github.com/plivox/gulmy/shell"
 )
 
-func FromFile() string {
+func VersionFromFile() string {
 	buf, err := ioutil.ReadFile("VERSION")
 	if err != nil {
 		log.Fatalf("error reading file VERSION: %v\n", err)
@@ -19,12 +17,7 @@ func FromFile() string {
 	return strings.TrimSpace(string(buf))
 }
 
-func FromGit() string {
-	version := s.Cmd("git", "describe", "--long", "--tags", "--dirty", "--always").Output()
-	return strings.TrimSpace(version)
-}
-
-func FromPackageJson() string {
+func VersionFromPackageJson() string {
 	path, err := os.Executable()
 	if err != nil {
 		log.Println(err)
